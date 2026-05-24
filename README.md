@@ -250,13 +250,125 @@ Tudo salvo em `outputs/` (ou diretório indicado via `--output`):
 - **Página 2** — Tabela comparativa entre pessoas (apenas se > 1 pessoa detectada)
 - **Por pessoa** (8 páginas cada):
   - Sumário individual com foto do primeiro frame detectado e métricas agregadas
-  - EAR e eventos de piscada ao longo do tempo
-  - Distribuição e mapa de direção do olhar
-  - Pose de cabeça (yaw / pitch / roll)
-  - Distribuição de emoções
-  - Análise de respiração
-  - Fadiga ocular (PERCLOS + score)
-  - Microexpressões e assimetria facial
+  - Gráfico 1: EAR e eventos de piscada
+  - Gráfico 2: Piscadas (pizza) + Direção do olhar (barras)
+  - Gráfico 3: Mapa de calor do olhar + Pose de cabeça
+  - Gráfico 4: Distribuição de emoções + Linha do tempo
+  - Gráfico 5: Sinal respiratório + Taxa respiratória
+  - Gráfico 6: Score de fadiga + PERCLOS
+  - Gráfico 7: Microexpressões + Assimetria facial
+
+---
+
+## Como Interpretar os Gráficos do Relatório
+
+### Página de Sumário Individual
+
+Exibe a foto do primeiro frame em que a pessoa foi detectada (crop do rosto com 30% de margem) ao lado de uma tabela com todas as métricas agregadas da sessão: total de frames, estabilidade de detecção, piscadas, taxa de atenção, emoção dominante, score de fadiga, total de microexpressões e assimetria média.
+
+**O que observar:** estabilidade abaixo de 80% indica que o rosto ficou fora de enquadramento ou com oclusão frequente — as métricas desta pessoa podem ser menos confiáveis.
+
+---
+
+### Gráfico 1 — EAR e Eventos de Piscada
+
+**O que mostra:** a curva do Eye Aspect Ratio (EAR) ao longo do tempo. Cada queda abrupta abaixo da linha tracejada vermelha (limiar = 0,22) representa um olho fechado. Marcadores triangulares indicam piscadas confirmadas (≥ 2 frames fechados consecutivos).
+
+**Como interpretar:**
+- **EAR estável entre 0,25 e 0,45** → olhos abertos em repouso normal.
+- **Quedas frequentes e profundas** → taxa de piscadas elevada; pode indicar fadiga ocular, irritação ou resposta emocional.
+- **Declínio gradual da linha base do EAR ao longo do tempo** → fechamento progressivo dos olhos, sinal clássico de sonolência.
+- **Piscadas de longa duração** (marcadores maiores) → classificadas como voluntárias (> 150 ms); piscadas rápidas são reflexos involuntários.
+
+---
+
+### Gráfico 2 — Piscadas (pizza) + Direção do Olhar (barras)
+
+**O que mostra:** à esquerda, a proporção entre piscadas voluntárias e involuntárias. À direita, o total de frames em cada direção do olhar (centro, esquerda, direita, cima, baixo).
+
+**Como interpretar:**
+- **Dominância de piscadas involuntárias** (curta duração) → padrão normal de vigília. Alta proporção de voluntárias pode indicar tentativa consciente de focar ou aliviar desconforto ocular.
+- **Taxa total de piscadas/min:**
+  - 10–20/min → faixa normal em adultos em repouso.
+  - > 30/min → associado a fadiga, estresse ou irritação.
+  - < 8/min → concentração intensa ou leitura (redução conhecida do reflexo palpebral).
+- **Direção do olhar:** "center" dominante indica atenção à frente (câmera/tela). Alto volume de "left" ou "right" pode indicar distração frequente. "up" pode indicar busca visual ou reflexo cognitivo.
+
+---
+
+### Gráfico 3 — Mapa de Calor do Olhar + Pose de Cabeça
+
+**O que mostra:** à esquerda, um scatter plot da posição normalizada da íris (eixo X = horizontal, eixo Y = vertical) com o percentual de atenção à tela. À direita, os três ângulos de Euler da cabeça ao longo do tempo: yaw (giro horizontal), pitch (inclinação vertical) e roll (rotação lateral).
+
+**Como interpretar — Mapa de Olhar:**
+- **Concentração central** → atenção focada à frente.
+- **Dispersão lateral ampla** → desvios frequentes, possível distração ou varredura visual ativa.
+- **`Atenção à tela`** (percentual no título): frames com olhar classificado como "center". Valores abaixo de 60% em sessões longas podem indicar dificuldade de manutenção de atenção.
+
+**Como interpretar — Pose de Cabeça:**
+- **Yaw próximo de 0°** → cabeça frontal. Yaw crescente ou oscilatório → desvios laterais frequentes.
+- **Pitch:** valores positivos indicam cabeça inclinada para baixo (leitura, sonolência); negativos indicam cabeça levantada.
+- **Roll:** inclinação lateral da cabeça. Variações bruscas são flagradas como `sudden_movement`.
+- **Linhas muito oscilatórias** em todos os ângulos → movimentação excessiva da cabeça durante a sessão.
+
+---
+
+### Gráfico 4 — Distribuição de Emoções + Linha do Tempo
+
+**O que mostra:** à esquerda, um gráfico de barras horizontais com a contagem de frames por emoção dominante (7 classes: neutro, alegria, raiva, tristeza, surpresa, medo, nojo). À direita, um scatter plot mostrando a sequência de emoções dominantes frame a frame ao longo do tempo.
+
+**Como interpretar:**
+- **Dominância de "neutral"** → padrão esperado em condições de repouso ou tarefas cognitivas neutras.
+- **Picos isolados de "surprise" ou "fear"** → podem corresponder a microexpressões ou reações pontuais a estímulos.
+- **"angry" persistente** → pode indicar tensão muscular facial crônica (não necessariamente raiva — rostos em repouso tensos ativam blendshapes de frown/browDown).
+- **Linha do tempo com alternâncias frequentes** → expressividade emocional alta ou iluminação instável gerando ruído nos blendshapes.
+
+---
+
+### Gráfico 5 — Sinal Respiratório + Taxa Respiratória
+
+**O que mostra:** à esquerda, a variação normalizada da largura nasal (proxy da respiração) ao longo do tempo — cada ciclo de subida e descida corresponde a um ciclo respiratório. À direita, a taxa respiratória estimada em respirações por minuto por janelas de 30 segundos.
+
+**Como interpretar:**
+- **Taxa normal em adultos em repouso:** 12–20 respirações/min.
+- **Taxa < 12/min (bradipneia)** → respiração lenta; pode ocorrer em estados de relaxamento profundo ou sonolência.
+- **Taxa > 20/min (taquipneia)** → respiração acelerada; associada a ansiedade, esforço físico ou estresse.
+- **Amplitude do sinal:** ciclos com amplitude alta indicam respiração mais profunda; amplitude baixa ("shallow") indica respiração superficial — comum em estados de tensão ou fadiga.
+- **Sinal irregular** → variabilidade respiratória alta. Pode ser ruído postural (movimento lateral da cabeça) ou respiração realmente irregular.
+- **Limitação importante:** este é um proxy indireto baseado em landmarks nasais. Movimentos bruscos de cabeça podem gerar falsos ciclos.
+
+---
+
+### Gráfico 6 — Score de Fadiga + PERCLOS
+
+**O que mostra:** à esquerda, o score de fadiga composto [0–1] ao longo do tempo, com linhas de referência para os quatro níveis (alert / mild / moderate / severe) e a curva do PERCLOS sobreposta. À direita, o PERCLOS individual em janelas de 60 segundos.
+
+**Como interpretar:**
+- **Score < 0,20 (alert)** → estado de alerta normal.
+- **Score 0,20–0,40 (mild)** → sinais leves de fadiga; taxa de piscadas elevada ou leve declínio do EAR.
+- **Score 0,40–0,60 (moderate)** → fadiga moderada; PERCLOS acima de 15% ou tendência de fechamento progressivo do EAR.
+- **Score > 0,60 (severe)** → sonolência significativa. PERCLOS alto (olhos fechados > 60% do tempo na janela de 60 s) — nível de risco em contextos de direção veicular (padrão NHTSA).
+- **Score crescente ao longo da sessão** → fadiga acumulada. Score estável indica estado de alerta mantido.
+- **PERCLOS:** interpretado como a fração de tempo com olho ≥ 80% fechado. Valores acima de 0,35 por períodos prolongados são considerados críticos pelo padrão NHTSA (1998).
+
+---
+
+### Gráfico 7 — Microexpressões + Assimetria Facial
+
+**O que mostra:** à esquerda, os eventos de microexpressão detectados ao longo do tempo: tipo de emoção (cor), intensidade (tamanho do marcador) e momento de ocorrência. À direita, o score de assimetria facial [0–1] ao longo do tempo, com a linha de referência para assimetria pronunciada.
+
+**Como interpretar — Microexpressões:**
+- **Eventos isolados e breves** (≤ 200 ms / ≤ 6 frames) → microexpressões genuínas, indicativas de reações emocionais espontâneas e involuntárias não sustentadas.
+- **Tipo de emoção:** microexpressões de "surprise" ou "fear" são as mais comuns em contextos de reação a estímulos inesperados. "contempt" ou "disgust" podem indicar reações negativas suprimidas.
+- **Alta densidade de eventos** → pode indicar expressividade emocional elevada ou, alternativamente, ruído nos blendshapes por iluminação instável ou movimentos de cabeça.
+- **Intensidade (Δscore):** valores próximos de 0,15 (limiar mínimo) são microexpressões fracas; valores acima de 0,30 são expressões mais intensas.
+
+**Como interpretar — Assimetria Facial:**
+- **Score < 0,10** → rosto simétrico (faixa normal).
+- **Score 0,10–0,30** → assimetria leve, dentro da variabilidade natural entre os lados do rosto.
+- **Score > 0,40** → assimetria pronunciada; pode indicar tensão muscular unilateral crônica, expressões de desconforto ou, em contextos clínicos, relevante para avaliação neurológica.
+- **Score estável ao longo do tempo** → padrão de simetria consistente. Picos pontuais correspondem a expressões assimétricas passageiras (piscar de um olho, sorrir de um lado).
+- **Lado dominante:** o lado com blendshapes consistentemente mais ativos é reportado como "left" ou "right". "symmetric" indica equilíbrio entre os lados.
 
 ### Colunas do CSV
 
