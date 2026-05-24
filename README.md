@@ -56,8 +56,8 @@ sudo apt install -y python3 python3-pip python3-venv git \
 #### 2. Clonar o repositório e entrar na pasta
 
 ```bash
-git clone <url-do-repositorio> visual-behavior-multi
-cd visual-behavior-multi
+git clone https://github.com/AIWASS23/video_behavior_mult.git
+cd visual_behavior_mult
 ```
 
 #### 3. Criar e ativar o ambiente virtual
@@ -95,8 +95,8 @@ brew install python@3.12
 #### 3. Clonar o repositório e entrar na pasta
 
 ```bash
-git clone <url-do-repositorio> visual-behavior-multi
-cd visual-behavior-multi
+git clone https://github.com/AIWASS23/video_behavior_mult.git
+cd visual_behavior_mult
 ```
 
 #### 4. Criar e ativar o ambiente virtual
