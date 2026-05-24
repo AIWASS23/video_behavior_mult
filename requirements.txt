@@ -1,0 +1,13 @@
+# ── Core vision & ML ──────────────────────────────────────────────────────────
+mediapipe>=0.10.0        # Face Landmarker Tasks API (inclui blendshapes ARKit)
+opencv-python>=4.8.0
+numpy>=1.24.0
+
+# ── Data & visualizacao ───────────────────────────────────────────────────────
+pandas>=2.0.0
+matplotlib>=3.7.0
+seaborn>=0.12.0
+scipy>=1.10.0
+
+# ── Config ────────────────────────────────────────────────────────────────────
+PyYAML>=6.0

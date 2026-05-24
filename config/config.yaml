@@ -1,0 +1,26 @@
+video:
+  source: 0          # 0 = webcam, or path to video file (e.g. "sample.mp4")
+  fps_limit: 30
+
+blink:
+  ear_threshold: 0.22      # EAR below this triggers blink detection
+  min_frames: 2            # minimum consecutive frames to count a blink
+  voluntary_min_ms: 150    # blinks >= this duration are classified as voluntary
+
+gaze:
+  horizontal_threshold: 0.35   # iris ratio outside [0.35, 0.65] = lateral deviation
+  vertical_threshold: 0.35
+
+head_pose:
+  frontal_threshold: 20.0          # max degrees for "frontal" classification
+  sudden_movement_threshold: 15.0  # degrees-per-frame delta to flag sudden movement
+
+emotion:
+  enabled: true
+  sample_interval: 5    # run emotion inference every N frames (performance trade-off)
+
+output:
+  save_video: true
+  save_csv: true
+  save_report: true
+  output_dir: outputs/
